@@ -1,0 +1,917 @@
+{
+  "info": {
+    "name": "HRM API",
+    "description": "API hệ thống quản lý nhân sự (HRM).\n\n**Cách dùng**\n1. Sửa biến `baseUrl` của collection cho đúng địa chỉ server (mặc định `http://localhost:5000/api`).\n2. Chạy `Xác thực > Đăng nhập (admin)` hoặc `Đăng nhập (nhân viên)`. Token tự được lưu vào biến `token` và dùng cho mọi request khác.\n3. Request tạo mới (phòng ban, nhân viên, đơn nghỉ) tự lưu `id` vừa tạo vào biến `departmentId`, `employeeId`, `leaveRequestId` để các request sửa/xoá dùng tiếp.\n\n**Tài khoản test**: `admin@hrm.local` / `123456` (ADMIN), `employee@hrm.local` / `123456` (EMPLOYEE).\n\n**Quyền**: nhóm Phòng ban, Nhân viên và phần duyệt đơn cần token ADMIN. Tạo/xem/huỷ đơn của mình cần token EMPLOYEE.\n\n**Mã lỗi**: 400 dữ liệu sai · 401 chưa đăng nhập hoặc token hết hạn · 403 sai vai trò · 404 không tìm thấy · 409 trùng dữ liệu. Lỗi luôn có dạng `{ \"message\": \"...\" }`.\n\n**Danh sách** luôn trả về `{ data: [...], pagination: { page, limit, total, total_pages } }`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "departmentId",
+      "value": "1"
+    },
+    {
+      "key": "employeeId",
+      "value": "2"
+    },
+    {
+      "key": "leaveRequestId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Xác thực",
+      "item": [
+        {
+          "name": "Đăng nhập (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Trả về `{ token, user }`. Token tự lưu vào biến `token`.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@hrm.local\",\n    \"password\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) { pm.collectionVariables.set(\"token\", pm.response.json().token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Đăng nhập (nhân viên)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"employee@hrm.local\",\n    \"password\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) { pm.collectionVariables.set(\"token\", pm.response.json().token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Thông tin của tôi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Đổi mật khẩu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            },
+            "description": "Mật khẩu mới tối thiểu 6 ký tự. Sai mật khẩu hiện tại trả 400.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"current_password\": \"123456\",\n    \"new_password\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Quên mật khẩu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            },
+            "description": "Luôn trả 200. Chưa gửi email thật: link đặt lại mật khẩu được in ra console của server, dòng bắt đầu bằng `[password-reset]`.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"employee@hrm.local\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Đặt lại mật khẩu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            },
+            "description": "Token có hạn 30 phút và chỉ dùng một lần.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"token\": \"<token lấy từ link trong console của server>\",\n    \"new_password\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phòng ban (ADMIN)",
+      "item": [
+        {
+          "name": "Danh sách phòng ban",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/departments?page=1&limit=10&search=IT",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "departments"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Trang, mặc định 1",
+                  "disabled": false
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Số dòng mỗi trang, mặc định 10, tối đa 100",
+                  "disabled": false
+                },
+                {
+                  "key": "search",
+                  "value": "IT",
+                  "description": "Tìm theo tên",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Xem một phòng ban",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/departments/{{departmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "departments",
+                "{{departmentId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Thêm phòng ban",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/departments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "departments"
+              ]
+            },
+            "description": "`name` bắt buộc và không được trùng (trùng trả 409).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Marketing\",\n    \"description\": \"Phòng Marketing\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) { pm.collectionVariables.set(\"departmentId\", pm.response.json().id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sửa phòng ban",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/departments/{{departmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "departments",
+                "{{departmentId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Marketing\",\n    \"description\": \"Mô tả mới\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Xoá phòng ban",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/departments/{{departmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "departments",
+                "{{departmentId}}"
+              ]
+            },
+            "description": "Nhân viên thuộc phòng ban bị xoá sẽ có `department_id = null`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nhân viên (ADMIN)",
+      "item": [
+        {
+          "name": "Danh sách nhân viên",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/employees?page=1&limit=10&search=nguyen&department_id=1&role=EMPLOYEE&status=ACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "employees"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Trang, mặc định 1",
+                  "disabled": false
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Số dòng mỗi trang, mặc định 10, tối đa 100",
+                  "disabled": false
+                },
+                {
+                  "key": "search",
+                  "value": "nguyen",
+                  "description": "Tìm theo tên, email, mã nhân viên",
+                  "disabled": true
+                },
+                {
+                  "key": "department_id",
+                  "value": "1",
+                  "description": "Lọc theo phòng ban",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "EMPLOYEE",
+                  "description": "ADMIN | EMPLOYEE",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE",
+                  "description": "ACTIVE | INACTIVE",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Xem một nhân viên",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/employees/{{employeeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "employees",
+                "{{employeeId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Số ngày phép của nhân viên",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/employees/{{employeeId}}/leave-balance?year=2026",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "employees",
+                "{{employeeId}}",
+                "leave-balance"
+              ],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "2026",
+                  "description": "Mặc định là năm hiện tại",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Thêm nhân viên",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/employees",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "employees"
+              ]
+            },
+            "description": "Bắt buộc: `employee_code`, `full_name`, `email`, `password` (tối thiểu 6 ký tự). `email` và `employee_code` không được trùng (trùng trả 409 kèm `field`).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"employee_code\": \"EMP003\",\n    \"full_name\": \"Tran Thi B\",\n    \"email\": \"tranthib@hrm.local\",\n    \"password\": \"123456\",\n    \"phone\": \"0900000000\",\n    \"position\": \"Developer\",\n    \"department_id\": 1,\n    \"date_of_birth\": \"1998-05-20\",\n    \"hire_date\": \"2026-10-01\",\n    \"role\": \"EMPLOYEE\",\n    \"status\": \"ACTIVE\",\n    \"annual_leave_days\": 12\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) { pm.collectionVariables.set(\"employeeId\", pm.response.json().id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sửa nhân viên",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/employees/{{employeeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "employees",
+                "{{employeeId}}"
+              ]
+            },
+            "description": "Chỉ gửi những trường cần sửa. Gửi `password` để đặt lại mật khẩu. Admin không thể tự khoá hoặc tự hạ quyền chính mình.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"position\": \"Senior Developer\",\n    \"phone\": \"0911111111\",\n    \"annual_leave_days\": 14\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Khoá tài khoản nhân viên",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/employees/{{employeeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "employees",
+                "{{employeeId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"INACTIVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Xoá nhân viên",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/employees/{{employeeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "employees",
+                "{{employeeId}}"
+              ]
+            },
+            "description": "Xoá luôn toàn bộ đơn nghỉ của nhân viên. Admin không thể tự xoá chính mình."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nghỉ phép - nhân viên (EMPLOYEE)",
+      "item": [
+        {
+          "name": "Đơn nghỉ phép của tôi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/leave-requests/me?page=1&limit=10&status=PENDING",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "leave-requests",
+                "me"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Trang, mặc định 1",
+                  "disabled": false
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Số dòng mỗi trang, mặc định 10, tối đa 100",
+                  "disabled": false
+                },
+                {
+                  "key": "status",
+                  "value": "PENDING",
+                  "description": "PENDING | APPROVED | REJECTED",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Số ngày phép của tôi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/leave-requests/balance?year=2026",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "leave-requests",
+                "balance"
+              ],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "2026",
+                  "description": "Mặc định là năm hiện tại",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "`total` được cấp · `used` đã duyệt · `pending` đang chờ · `remaining` = total - used · `available` = total - used - pending."
+          }
+        },
+        {
+          "name": "Tạo đơn nghỉ phép",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/leave-requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "leave-requests"
+              ]
+            },
+            "description": "`leave_type`: ANNUAL | SICK | UNPAID. Ngày dạng YYYY-MM-DD. Số ngày chỉ tính thứ 2 - thứ 6. Chỉ ANNUAL bị trừ ngày phép; vượt số ngày còn lại trả 400. Trùng ngày với đơn đang chờ/đã duyệt trả 409.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"leave_type\": \"ANNUAL\",\n    \"start_date\": \"2026-11-09\",\n    \"end_date\": \"2026-11-10\",\n    \"reason\": \"Việc gia đình\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) { pm.collectionVariables.set(\"leaveRequestId\", pm.response.json().id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Huỷ đơn nghỉ phép",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/leave-requests/{{leaveRequestId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "leave-requests",
+                "{{leaveRequestId}}"
+              ]
+            },
+            "description": "Chỉ huỷ được đơn của chính mình khi còn PENDING."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nghỉ phép - duyệt (ADMIN)",
+      "item": [
+        {
+          "name": "Tất cả đơn nghỉ phép",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/leave-requests?page=1&limit=10&status=PENDING&leave_type=ANNUAL&employee_id=2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "leave-requests"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Trang, mặc định 1",
+                  "disabled": false
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Số dòng mỗi trang, mặc định 10, tối đa 100",
+                  "disabled": false
+                },
+                {
+                  "key": "status",
+                  "value": "PENDING",
+                  "description": "PENDING | APPROVED | REJECTED",
+                  "disabled": true
+                },
+                {
+                  "key": "leave_type",
+                  "value": "ANNUAL",
+                  "description": "ANNUAL | SICK | UNPAID",
+                  "disabled": true
+                },
+                {
+                  "key": "employee_id",
+                  "value": "2",
+                  "description": "Lọc theo nhân viên",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Duyệt đơn",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/leave-requests/{{leaveRequestId}}/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "leave-requests",
+                "{{leaveRequestId}}",
+                "approve"
+              ]
+            },
+            "description": "Chỉ duyệt được đơn PENDING. `admin_note` không bắt buộc.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"admin_note\": \"Đồng ý\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Từ chối đơn",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/leave-requests/{{leaveRequestId}}/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "leave-requests",
+                "{{leaveRequestId}}",
+                "reject"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"admin_note\": \"Trùng lịch dự án\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tổng quan",
+      "item": [
+        {
+          "name": "Tổng quan admin (ADMIN)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/admin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard",
+                "admin"
+              ]
+            },
+            "description": "Số phòng ban, số nhân viên, số đơn theo trạng thái, số người nghỉ hôm nay, nhân viên theo phòng ban, 5 đơn chờ duyệt mới nhất."
+          }
+        },
+        {
+          "name": "Tổng quan của tôi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard",
+                "me"
+              ]
+            },
+            "description": "Thông tin cá nhân, số ngày phép năm nay, số đơn theo trạng thái, 5 đơn mới nhất."
+          }
+        }
+      ]
+    }
+  ]
+}
