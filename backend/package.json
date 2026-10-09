@@ -9,7 +9,8 @@
     "test": "node tests/e2e.js",
     "set-password": "node src/scripts/setPassword.js",
     "sql": "node src/scripts/runSql.js",
-    "db:init": "node src/scripts/initDb.js"
+    "db:init": "node src/scripts/initDb.js",
+    "db:seed": "node src/scripts/seedEmployees.js"
   },
   "keywords": [],
   "author": "",

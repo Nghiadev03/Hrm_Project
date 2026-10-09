@@ -34,6 +34,7 @@ npm run set-password -- <mật khẩu> <email>    # đặt lại mật khẩu ch
 npm run sql -- sql/<file>.sql                 # chạy một file SQL lên database
 npm run db:init                               # tạo database + bảng + admin đầu tiên (chạy lại được)
 npm run db:init -- --sample                   # như trên, thêm 3 phòng ban và 1 nhân viên mẫu
+npm run db:seed                               # thêm 10 nhân viên mẫu EMP101-EMP110 (mật khẩu 123456), chạy lại không tạo trùng
 ```
 
 ```powershell
@@ -123,6 +124,7 @@ backend/
       leaveBalance.js          # getLeaveBalance(employee, year)
     scripts/
       initDb.js                # npm run db:init
+      seedEmployees.js         # npm run db:seed
       setPassword.js
       runSql.js
 docs/
