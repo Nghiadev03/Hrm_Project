@@ -145,7 +145,8 @@ frontend/
       useFetch.js              # nạp API trả về một đối tượng
       useDebounce.js
     components/
-      Layout.jsx               # thanh bên + vùng nội dung, menu theo vai trò
+      Layout.jsx               # thanh bên (menu chia nhóm theo vai trò) + thanh trên (tên trang, menu người dùng)
+      Icon.jsx                 # <Icon name="users" />: biểu tượng SVG nét mảnh, thêm biểu tượng mới vào ICONS
       RouteGuards.jsx          # ProtectedRoute, GuestRoute, HomeRedirect
       Modal.jsx, ConfirmDialog.jsx, DataTable.jsx, Pagination.jsx, Badge.jsx
       ChangePasswordModal.jsx, LeaveBalanceCards.jsx
@@ -355,6 +356,10 @@ Cách hoạt động:
 - Giao diện tiếng Việt. Backend trả lỗi tiếng Anh, `utils/errors.js` dịch lại; **thêm thông báo lỗi mới ở backend thì thêm bản dịch vào đây**, nếu không người dùng sẽ thấy câu tiếng Anh
 - Đếm ngày làm việc có ở cả hai phía (`backend/src/utils/leaveDays.js` và `frontend/src/utils/format.js`), sửa quy tắc thì sửa cả hai
 - Bố cục co giãn: dưới 860px thanh bên ẩn đi, mở bằng nút menu trên thanh trên
+- Phong cách giao diện dựng theo mẫu dashboard "Haze": thanh bên xám đậm, màu nhấn xanh lục (`--color-primary: #059669`), thanh trên trắng, thẻ trắng bo góc 14px
+- Đổi mật khẩu và Đăng xuất nằm trong menu người dùng ở góc phải thanh trên (`UserMenu` trong `Layout.jsx`), không còn ở thanh bên
+- Thêm mục menu: sửa `NAV_SECTIONS` trong `Layout.jsx`; tên trang trên thanh trên tự lấy theo mục đang mở
+- Hai trang tổng quan mở đầu bằng `.banner` thay cho `.page-header`. Các khối dùng lại được: `.stat-card` (kèm `.stat-card__icon`), `.panel`, `.bar` (thanh tiến độ), `.meter-list`, `.rate-row`, `.ring` (vòng phần trăm, đặt `--value`), `.rank-list`, `.timeline`
 
 Mẫu cho một trang danh sách (xem `pages/admin/DepartmentsPage.jsx`): `usePagedList(api.list, { bộ lọc })` → `<DataTable>` + `<Pagination>`; form thêm/sửa nằm trong `<Modal>`, xoá dùng `<ConfirmDialog>`; lưu xong gọi `showToast(...)` và `list.reload()`.
 

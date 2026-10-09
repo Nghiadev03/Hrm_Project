@@ -1,9 +1,10 @@
 /* Biến màu, reset và kiểu chữ dùng chung cho toàn ứng dụng */
 
 :root {
-    --color-primary: #2563eb;
-    --color-primary-dark: #1d4ed8;
-    --color-primary-soft: #eff4ff;
+    --color-primary: #059669;
+    --color-primary-dark: #047857;
+    --color-primary-soft: #e7f6ef;
+    --color-primary-ring: rgba(5, 150, 105, 0.18);
 
     --color-success: #15803d;
     --color-success-soft: #e8f6ed;
@@ -19,17 +20,24 @@
     --color-text-muted: #64748b;
     --color-border: #e2e8f0;
     --color-border-strong: #cbd5e1;
-    --color-bg: #f1f5f9;
+    --color-bg: #f3f5f7;
     --color-surface: #ffffff;
     --color-surface-alt: #f8fafc;
 
-    --color-sidebar: #0f172a;
-    --color-sidebar-hover: #1e293b;
+    --color-sidebar: #1c2735;
+    --color-sidebar-hover: #263445;
+    --color-sidebar-active: rgba(16, 185, 129, 0.16);
+    --color-sidebar-accent: #34d399;
     --color-sidebar-text: #cbd5e1;
-    --color-sidebar-muted: #94a3b8;
+    --color-sidebar-muted: #7d8da1;
+
+    --color-warning-strong: #f59e0b;
+    --color-success-strong: #10b981;
+    --color-danger-strong: #ef4444;
+    --color-info-strong: #3b82f6;
 
     --radius: 8px;
-    --radius-lg: 12px;
+    --radius-lg: 14px;
     --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
     --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
     --shadow-lg: 0 20px 48px rgba(15, 23, 42, 0.22);
@@ -100,6 +108,11 @@ button:disabled {
 :focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
+}
+
+.icon {
+    flex: none;
+    display: block;
 }
 
 .page-loading {

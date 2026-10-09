@@ -1,9 +1,16 @@
 import { Link } from "react-router-dom";
 import { dashboardApi } from "../../api";
 import { LeaveStatusBadge } from "../../components/Badge";
+import Icon from "../../components/Icon";
 import LeaveBalanceCards from "../../components/LeaveBalanceCards";
 import { useFetch } from "../../hooks/useFetch";
 import { LEAVE_TYPE_LABELS, formatDate, formatDateRange } from "../../utils/format";
+
+const STATUS_TONES = {
+    PENDING: "warning",
+    APPROVED: "success",
+    REJECTED: "danger",
+};
 
 export default function EmployeeDashboardPage() {
     const { data, loading, error } = useFetch(dashboardApi.me);
@@ -20,15 +27,19 @@ export default function EmployeeDashboardPage() {
 
     return (
         <>
-            <div className="page-header">
+            <section className="banner">
                 <div>
-                    <h1 className="page-title">Xin chào, {profile.full_name}</h1>
-                    <p className="page-subtitle">Thông tin cá nhân và tình hình nghỉ phép của bạn</p>
+                    <h1 className="banner__title">Xin chào, {profile.full_name}</h1>
+                    <p className="banner__text">
+                        Bạn còn <strong>{Math.max(balance.available, 0)} ngày phép</strong> có thể xin trong năm{" "}
+                        {balance.year} và <strong>{counts.PENDING} đơn</strong> đang chờ duyệt
+                    </p>
                 </div>
-                <Link to="/employee/leave-requests" className="btn btn--primary">
-                    + Tạo đơn nghỉ phép
+                <Link to="/employee/leave-requests" className="banner__action">
+                    Tạo đơn nghỉ phép
+                    <Icon name="arrowRight" size={16} />
                 </Link>
-            </div>
+            </section>
 
             <LeaveBalanceCards balance={balance} />
 
@@ -68,15 +79,17 @@ export default function EmployeeDashboardPage() {
                     {recent.length === 0 ? (
                         <p className="panel__empty">Bạn chưa có đơn nghỉ phép nào</p>
                     ) : (
-                        <ul className="item-list">
+                        <ul className="timeline">
                             {recent.map((request) => (
-                                <li key={request.id} className="item-list__item">
-                                    <div>
-                                        <div className="item-list__title">
-                                            {LEAVE_TYPE_LABELS[request.leave_type] || request.leave_type}
+                                <li key={request.id} className="timeline__item">
+                                    <span className={`timeline__dot timeline__dot--${STATUS_TONES[request.status]}`} />
+                                    <div className="timeline__body">
+                                        <div className="timeline__title">
+                                            <strong>{LEAVE_TYPE_LABELS[request.leave_type] || request.leave_type}</strong>{" "}
+                                            · {request.days} ngày
                                         </div>
-                                        <div className="item-list__meta">
-                                            {formatDateRange(request.start_date, request.end_date)} · {request.days} ngày
+                                        <div className="timeline__meta">
+                                            {formatDateRange(request.start_date, request.end_date)}
                                         </div>
                                     </div>
                                     <LeaveStatusBadge status={request.status} />

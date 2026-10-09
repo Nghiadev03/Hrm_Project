@@ -3,3 +3,7 @@ node_modules/
 dist/
 build/
 *.log
+
+# Ghi chú cá nhân không đưa lên git; riêng README.md vẫn đưa lên vì là hướng dẫn cài đặt
+*.md
+!README.md

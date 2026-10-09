@@ -83,8 +83,3 @@ npm test
 Bộ kiểm thử tự bật server ở cổng 5055, gọi API thật 75 trường hợp và tự xoá dữ liệu nó tạo ra. Nó cần database đã khởi tạo với `--sample`. Nếu đã đổi email hoặc mật khẩu của hai tài khoản mẫu, đặt các biến `TEST_*` trong `.env` (xem `.env.example`).
 
 Để thử bằng tay, nhập `docs/HRM.postman_collection.json` vào Postman: 27 request mẫu, đăng nhập xong token tự được dùng cho các request còn lại.
-
-## Tài liệu khác
-
-- `CLAUDE.md`: bảng API đầy đủ, cấu trúc thư mục, quy tắc nghiệp vụ, quy ước code.
-- `giải thích.md`: giải thích code từ tổng thể đến chi tiết.

@@ -11,6 +11,7 @@ export default function LoginPage() {
     const location = useLocation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [submitting, setSubmitting] = useState(false);
 
@@ -33,13 +34,16 @@ export default function LoginPage() {
     };
 
     return (
-        <AuthCard title="Đăng nhập" subtitle="Hệ thống quản lý nhân sự">
+        <AuthCard title="Chào mừng trở lại" subtitle="Đăng nhập để tiếp tục làm việc">
             <form className="form" onSubmit={onSubmit}>
                 {error && <div className="alert alert--error">{error}</div>}
-                <label className="field">
-                    <span className="field__label">Email</span>
+                <div className="field">
+                    <label className="field__label" htmlFor="login-email">
+                        Email
+                    </label>
                     <input
-                        className="input"
+                        id="login-email"
+                        className="input input--large"
                         type="email"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
@@ -48,24 +52,40 @@ export default function LoginPage() {
                         required
                         autoFocus
                     />
-                </label>
-                <label className="field">
-                    <span className="field__label">Mật khẩu</span>
-                    <input
-                        className="input"
-                        type="password"
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                        autoComplete="current-password"
-                        required
-                    />
-                </label>
+                </div>
+                <div className="field">
+                    <div className="field__row">
+                        <label className="field__label" htmlFor="login-password">
+                            Mật khẩu
+                        </label>
+                        <Link to="/forgot-password" className="field__link">
+                            Quên mật khẩu?
+                        </Link>
+                    </div>
+                    <div className="input-group">
+                        <input
+                            id="login-password"
+                            className="input input--large"
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(event) => setPassword(event.target.value)}
+                            autoComplete="current-password"
+                            required
+                        />
+                        <button
+                            type="button"
+                            className="input-group__action"
+                            onClick={() => setShowPassword(!showPassword)}
+                            aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                            aria-pressed={showPassword}
+                        >
+                            {showPassword ? "Ẩn" : "Hiện"}
+                        </button>
+                    </div>
+                </div>
                 <button type="submit" className="btn btn--primary btn--block" disabled={submitting}>
                     {submitting ? "Đang đăng nhập..." : "Đăng nhập"}
                 </button>
-                <Link to="/forgot-password" className="auth-link">
-                    Quên mật khẩu?
-                </Link>
             </form>
         </AuthCard>
     );
