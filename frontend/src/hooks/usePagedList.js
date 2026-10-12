@@ -10,6 +10,8 @@ export function usePagedList(fetcher, filters = {}, limit = 10) {
     const [state, setState] = useState({
         rows: [],
         pagination: null,
+        // toàn bộ phản hồi của API, cho các trường đi kèm ngoài data / pagination
+        response: null,
         loading: true,
         error: "",
     });
@@ -39,6 +41,7 @@ export function usePagedList(fetcher, filters = {}, limit = 10) {
                 setState({
                     rows: result.data,
                     pagination: result.pagination,
+                    response: result,
                     loading: false,
                     error: "",
                 });
@@ -48,6 +51,7 @@ export function usePagedList(fetcher, filters = {}, limit = 10) {
                     setState({
                         rows: [],
                         pagination: null,
+                        response: null,
                         loading: false,
                         error: getErrorMessage(error),
                     });

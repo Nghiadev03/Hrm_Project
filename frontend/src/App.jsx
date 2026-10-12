@@ -1,7 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import { GuestRoute, HomeRedirect, ProtectedRoute } from "./components/RouteGuards";
+import ChatPage from "./pages/ChatPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import DocumentsPage from "./pages/admin/DocumentsPage";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import DepartmentsPage from "./pages/admin/DepartmentsPage";
 import EmployeesPage from "./pages/admin/EmployeesPage";
@@ -29,6 +31,8 @@ export default function App() {
                     <Route path="departments" element={<DepartmentsPage />} />
                     <Route path="employees" element={<EmployeesPage />} />
                     <Route path="leave-requests" element={<LeaveRequestsPage />} />
+                    <Route path="documents" element={<DocumentsPage />} />
+                    <Route path="chat" element={<ChatPage />} />
                 </Route>
             </Route>
 
@@ -36,6 +40,7 @@ export default function App() {
                 <Route path="/employee" element={<Layout />}>
                     <Route index element={<EmployeeDashboardPage />} />
                     <Route path="leave-requests" element={<MyLeaveRequestsPage />} />
+                    <Route path="chat" element={<ChatPage />} />
                 </Route>
             </Route>
 

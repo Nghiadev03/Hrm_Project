@@ -47,6 +47,18 @@ export const leaveRequestApi = {
     reject: (id, admin_note) => client.patch(`/leave-requests/${id}/reject`, { admin_note }),
 };
 
+export const documentApi = {
+    list: (params) => client.get("/documents", { params: cleanParams(params) }),
+    // formData gồm: file, title
+    upload: (formData) => client.post("/documents", formData),
+    remove: (id) => client.delete(`/documents/${id}`),
+};
+
+export const chatApi = {
+    ask: (question) => client.post("/chat", { question }),
+    history: (params) => client.get("/chat/history", { params: cleanParams(params) }),
+};
+
 export const dashboardApi = {
     admin: () => client.get("/dashboard/admin"),
     me: () => client.get("/dashboard/me"),

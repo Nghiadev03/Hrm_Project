@@ -57,6 +57,20 @@ const ICONS = {
             <path d="M8 11V8a4 4 0 0 1 8 0v3" />
         </>
     ),
+    book: (
+        <>
+            <path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z" />
+            <path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19v-3M9 7h6" />
+        </>
+    ),
+    chat: (
+        <>
+            <path d="M4 5h16v11H10l-5 4v-4H4z" />
+            <path d="M8 9.5h8M8 12.5h5" />
+        </>
+    ),
+    upload: <path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" />,
+    send: <path d="M4 12l16-8-6 16-2.5-6.5z M11.5 13.5L20 4" />,
     logout: <path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9" />,
     menu: <path d="M4 6h16M4 12h16M4 18h16" />,
     chevronDown: <path d="M6 9l6 6 6-6" />,

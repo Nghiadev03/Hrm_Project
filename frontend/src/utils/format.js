@@ -72,3 +72,26 @@ export const countWorkingDays = (start, end) => {
 };
 
 export const homePath = (user) => (user.role === "ADMIN" ? "/admin" : "/employee");
+
+export const DOCUMENT_STATUS_LABELS = {
+    PROCESSING: "Đang xử lý",
+    READY: "Sẵn sàng",
+    FAILED: "Lỗi",
+};
+
+// 1536000 -> "1,5 MB"
+export const formatFileSize = (bytes) => {
+    if (!bytes && bytes !== 0) {
+        return "—";
+    }
+
+    if (bytes < 1024) {
+        return `${bytes} B`;
+    }
+
+    if (bytes < 1024 * 1024) {
+        return `${(bytes / 1024).toLocaleString("vi-VN", { maximumFractionDigits: 0 })} KB`;
+    }
+
+    return `${(bytes / 1024 / 1024).toLocaleString("vi-VN", { maximumFractionDigits: 1 })} MB`;
+};

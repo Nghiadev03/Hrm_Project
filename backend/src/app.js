@@ -6,6 +6,8 @@ const departmentRoutes = require("./routes/departmentRoutes");
 const employeeRoutes = require("./routes/employeeRoutes");
 const leaveRequestRoutes = require("./routes/leaveRequestRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const documentRoutes = require("./routes/documentRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 
 const app = express();
 
@@ -23,6 +25,8 @@ app.use("/api/departments", departmentRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/leave-requests", leaveRequestRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/documents", documentRoutes);
+app.use("/api/chat", chatRoutes);
 
 // Đường dẫn không tồn tại
 app.use((req, res) => {

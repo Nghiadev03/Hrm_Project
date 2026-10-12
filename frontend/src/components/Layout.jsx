@@ -18,7 +18,12 @@ const NAV_SECTIONS = {
                 { to: "/admin/departments", label: "Phòng ban", icon: "building" },
                 { to: "/admin/employees", label: "Nhân viên", icon: "users" },
                 { to: "/admin/leave-requests", label: "Duyệt nghỉ phép", icon: "calendarCheck" },
+                { to: "/admin/documents", label: "Tài liệu", icon: "book" },
             ],
+        },
+        {
+            title: "Trợ lý",
+            items: [{ to: "/admin/chat", label: "Hỏi đáp tài liệu", icon: "chat" }],
         },
     ],
     EMPLOYEE: [
@@ -29,6 +34,10 @@ const NAV_SECTIONS = {
         {
             title: "Nghỉ phép",
             items: [{ to: "/employee/leave-requests", label: "Đơn nghỉ phép của tôi", icon: "file" }],
+        },
+        {
+            title: "Trợ lý",
+            items: [{ to: "/employee/chat", label: "Hỏi đáp tài liệu", icon: "chat" }],
         },
     ],
 };
